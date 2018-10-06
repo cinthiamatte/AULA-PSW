@@ -1,80 +1,151 @@
 package udc.edu.psw;
 
-public class ListaEncad {
-	private NoLista inicio;
+public class ListaEncad
+{
+	private NoLista inicio;		//instancia o inicio e final da lista
 	private NoLista fim;
-	private int tamanho = 0;
+	
+	private int tamanho = 0; 	//inicializa
+	
+	//private: encapsulamento
+	//public: cria uma interface, permitindo o uso fora da classe
 	
 	public int getTamanho() {
 		return tamanho;
 	}
 	
-	public void inserirHead(Object dados){
+	public boolean isVazia() {	//verificar se a lista esta vazia
+		if(tamanho == 0)
+			return true;
+		return false;
+	}
+	
+	public void inserir(Object obj, int pos) {
+		NoLista novo = new NoLista();
+		novo.dado = obj;
+		novo.proximo = null;
+		novo.anterior = null;
 		
-		NoLista novo = new NoLista(dados);
+		if(pos < 1 || pos > tamanho+1) {
+			return;
+		}
 		
-		if(isEmpty()) {
-			
+		if(tamanho == 0) {			//LISTA VAZIA
+			tamanho++;
 			inicio = novo;
 			fim = novo;
+			return;
 		}
-		else {
-			inicio.setAnterior(novo);
-			novo.setProximo(inicio);
+		
+		if(pos == 1) {		//NOVO INICIO
+			novo.proximo = inicio;
+			inicio.anterior = novo;
 			inicio = novo;
+			tamanho++;
+			return;
 		}
 		
-		tamanho++;
+		if(pos == tamanho + 1) {		//NOVO fim		//juntando a conndição lista vazia e o novo fim cria-se a função inserirFim
+			novo.anterior = fim;
+			fim.proximo = novo;
+			fim = novo;
+			tamanho++;
+			return;
+		}
 		
-	}//inserir no inicio
-	
-	public void inserirMeio(Object dados) {
-		
-		NoLista novo = new NoLista(dados);
+		//INSERIR NO MEIO DA LISTA
 		NoLista aux = inicio;
 		int cont = 1;
 		
-		if(isEmpty()) {
-			
-			inicio = novo;
-			fim = novo;
+		while(cont < pos) {
+			aux = aux.proximo;
+			cont++;
 		}
-		else {
-			while(cont < tamanho) {
-				aux = aux.getProximo();
-				cont++;
-			}
-			
-			novo.setAnterior(aux.getAnterior()); 
-			novo.setProximo(aux);
-			aux.setAnteriorProx(novo);
-			aux.setAnterior(novo);
-		}
-		tamanho++;
-			
-	}
 		
-	public void inserirTail(Object dados) {
-		
-		NoLista novo = new NoLista(dados);
-		
-		if(isEmpty()) {
-			
-			inicio = novo;
-			fim = novo;
-		}
-		else {
-			novo.setAnterior(fim);
-			fim.setProximo(novo);
-			novo = fim;
-		}
+		novo.anterior = aux.anterior;
+		novo.proximo = aux;
+		aux.anterior.proximo = novo;
+		aux.anterior = novo;
 		
 		tamanho++;
-		
-	}//inserir no fim
-
-	private boolean isEmpty() {
-		// TODO Auto-generated method stub
-		return false;
 	}
+	
+	public Object remover(int pos) {			///REMOVENDO UNICO ELEMENTO DA LISTA
+		NoLista aux = inicio;
+		int cont = 1;
+		
+		if(tamanho == 0)
+			return null;
+		
+		if(pos > tamanho)
+			return null;
+		
+		if(tamanho == 1) {
+			Object dado = inicio.dado;
+			
+			inicio = null;
+			fim = null;
+			
+			tamanho--;
+			
+			return dado;
+		}
+		
+		if(pos == 1) {				//REMOVER INICIO
+			Object dado = inicio.dado;
+			
+			inicio.proximo.anterior = null;		//corta a volta 
+			inicio = inicio.proximo;			//aponta o inicio para o proximo
+			
+			tamanho--;
+			
+			return dado;
+			//return removerFim();
+		}
+		
+		if(pos == tamanho) {			//REMOVER O FIM
+			Object dado = fim.dado;
+			
+			fim.anterior.proximo = null;		//corta a volta 
+			fim = fim.anterior;			//aponta o inicio para o proximo
+			
+			tamanho--;
+			
+			return dado;
+		}
+		
+		///REMOVER NÓ DO MEIO DA LISTA
+		
+		while(cont < pos) {
+			aux = aux.proximo;
+			cont++;
+		}
+		
+		Object dado = aux.dado;
+		
+		aux.anterior.proximo = aux.proximo;
+		aux.proximo.anterior = aux.anterior;
+		
+		tamanho--;
+		return dado;
+	}
+	
+	public Object pesquisar(int pos) {
+		NoLista aux = inicio;
+		int cont = 1;
+		
+		if(tamanho == 0)
+			return null;
+		
+		if(pos > tamanho)
+			return null;
+		
+		while(cont < pos) {
+			aux = aux.proximo;
+			cont++;
+		}
+		
+		return aux.dado;
+		
+	} 
 }
