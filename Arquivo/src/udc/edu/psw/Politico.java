@@ -5,7 +5,6 @@ public class Politico {
 	private String nome;
 	private int numero;
 	
-	
 	public Politico(String partido, String nome, int numero) {
 		this.partido = partido;
 		this.nome = nome;
